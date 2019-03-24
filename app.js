@@ -1,36 +1,79 @@
-var express = require("express");
-var app = express();
-var bodyParser = require("body-parser");
-var campgrounds = [
-            {name: "Salmon Creek", image: "https://farm4.staticflickr.com/3278/2671754433_f56fd9b026.jpg"},
-            {name: "Stoner's Escape", image: "https://farm4.staticflickr.com/3042/2671765705_019ec5915f.jpg"},
-            {name: "Sketchy People Camp", image: "https://farm2.staticflickr.com/1489/26610489731_9cc1f1d78d.jpg"},
-            {name: "Salmon Creek", image: "https://farm4.staticflickr.com/3278/2671754433_f56fd9b026.jpg"},
-            {name: "Stoner's Escape", image: "https://farm4.staticflickr.com/3042/2671765705_019ec5915f.jpg"},
-            {name: "Sketchy People Camp", image: "https://farm2.staticflickr.com/1489/26610489731_9cc1f1d78d.jpg"},
-    ];
-
+var express     = require("express"),
+    app         = express(),
+    bodyParser  = require("body-parser"),
+    mongoose    = require("mongoose");
+    
+mongoose.connect("mongodb://localhost:27017/yelp_camp", {useNewUrlParser: true});    
 app.use(bodyParser.urlencoded({extended:true}));
 app.set("view engine", "ejs");
+
+//SCHEMA
+var campgroundSchema = new mongoose.Schema({
+    name: String,
+    image: String,
+    description: String
+});
+
+var Campground = mongoose.model("Campground", campgroundSchema);
+
+// Campground.create(
+//     {
+//         name: "Stoner's Bask",
+//         image: "https://www.nps.gov/shen/planyourvisit/images/20170712_A7A9022_nl_Campsites_BMCG_960.jpg",
+//         description: "Lovely, peaceful space where you can chill and get high"
+//     },
+//     function(err, campground) {
+//       if(err){
+//           console.log(err);
+//       } else{
+//           console.log("Newly created campground: ");
+//           console.log(campground)
+//       }
+//     }
+// )
+
 
 app.get("/", function(req, res){
     res.render("landing");
 });
 
 app.get("/campgrounds", function(req, res){
-    res.render("campgrounds", {campgrounds: campgrounds});
+    Campground.find({}, function(err, allCampgrounds){
+        if(err){
+            console.log(err);
+        } else{
+            res.render("index", {campgrounds: allCampgrounds});
+        }
+    })
+    
 });
-
-app.get("/campgrounds/new", function(req, res) {
-    res.render("new");
-})
 
 app.post("/campgrounds", function(req, res){
     var name = req.body.name;
     var image = req.body.image;
-    var newCampground = {name: name, image, image};
-    campgrounds.push(newCampground);
-    res.redirect("/campgrounds");
+    var desc = req.body.description;
+    var newCampground = {name: name, image: image, description:desc};
+    Campground.create(newCampground, function(err, newlyCreated){
+       if(err){
+           console.log(err);
+       } else{
+           res.redirect("/campgrounds");
+       }
+    })
+});
+
+app.get("/campgrounds/new", function(req, res) {
+    res.render("new");
+});
+
+app.get("/campgrounds/:id", function(req, res) {
+    Campground.findById(req.params.id, function(err, foundCampground){
+       if(err){
+           console.log(err);
+       } else{
+           res.render("show", {campground: foundCampground});
+       }
+    });
     
 })
 
