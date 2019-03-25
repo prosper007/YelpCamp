@@ -1,42 +1,21 @@
 var express     = require("express"),
     app         = express(),
     bodyParser  = require("body-parser"),
-    mongoose    = require("mongoose");
-    
+    mongoose    = require("mongoose"),
+    Campground = require("./models/campground"),
+    seedDB = require("./seeds");
+
 mongoose.connect("mongodb://localhost:27017/yelp_camp", {useNewUrlParser: true});    
 app.use(bodyParser.urlencoded({extended:true}));
 app.set("view engine", "ejs");
-
-//SCHEMA
-var campgroundSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    description: String
-});
-
-var Campground = mongoose.model("Campground", campgroundSchema);
-
-// Campground.create(
-//     {
-//         name: "Stoner's Bask",
-//         image: "https://www.nps.gov/shen/planyourvisit/images/20170712_A7A9022_nl_Campsites_BMCG_960.jpg",
-//         description: "Lovely, peaceful space where you can chill and get high"
-//     },
-//     function(err, campground) {
-//       if(err){
-//           console.log(err);
-//       } else{
-//           console.log("Newly created campground: ");
-//           console.log(campground)
-//       }
-//     }
-// )
+seedDB();   
 
 
 app.get("/", function(req, res){
     res.render("landing");
 });
 
+//INDEX ROUTE
 app.get("/campgrounds", function(req, res){
     Campground.find({}, function(err, allCampgrounds){
         if(err){
@@ -48,6 +27,7 @@ app.get("/campgrounds", function(req, res){
     
 });
 
+//CREATE ROUTE
 app.post("/campgrounds", function(req, res){
     var name = req.body.name;
     var image = req.body.image;
@@ -62,12 +42,14 @@ app.post("/campgrounds", function(req, res){
     })
 });
 
+//NEW ROUTE
 app.get("/campgrounds/new", function(req, res) {
     res.render("new");
 });
 
+//SHOW ROUTE
 app.get("/campgrounds/:id", function(req, res) {
-    Campground.findById(req.params.id, function(err, foundCampground){
+    Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
        if(err){
            console.log(err);
        } else{
