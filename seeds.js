@@ -6,22 +6,22 @@ var data = [
         {
             name: "Stoner's Bask",
             image: "https://www.nps.gov/shen/planyourvisit/images/20170712_A7A9022_nl_Campsites_BMCG_960.jpg",
-            description: "Lovely, peaceful space where you can chill and get high"
+            description: "Lovely, peaceful space where you can chill and get high. Spicy jalapeno bacon ipsum dolor amet strip steak buffalo ball tip swine pastrami corned beef. Short ribs prosciutto alcatra, hamburger kielbasa pork loin bacon andouille pastrami pork belly. Shank short loin shankle alcatra. Ground round meatball biltong spare ribs doner pig, fatback jerky capicola landjaeger meatloaf."
         },
         {
             name: "Hippies' Den",
             image: "https://www.planetware.com/photos-large/USUT/utah-zion-national-park-camping-south-campground.jpg",
-            description: "One of the few cool spots that hasn't become cool yet. Hippy gold"
+            description: "One of the few cool spots that hasn't become cool yet. Hippy gold. Spicy jalapeno bacon ipsum dolor amet strip steak buffalo ball tip swine pastrami corned beef. Short ribs prosciutto alcatra, hamburger kielbasa pork loin bacon andouille pastrami pork belly. Shank short loin shankle alcatra. Ground round meatball biltong spare ribs doner pig, fatback jerky capicola landjaeger meatloaf."
         },
         {
             name: "GossipGround",
             image: "https://static1.squarespace.com/static/5a01c0b0017db2a719c25b23/5a3fd4358165f5d70b754a0c/5a3fd6610852297f08180edc/1514288612010/Sunburst-Campground.jpg",
-            description: "Enjoy being in everybody's business? Well nobody can escape your nosy ears on this ground"
+            description: "Enjoy being in everybody's business? Well nobody can escape your nosy ears on this ground. Spicy jalapeno bacon ipsum dolor amet strip steak buffalo ball tip swine pastrami corned beef. Short ribs prosciutto alcatra, hamburger kielbasa pork loin bacon andouille pastrami pork belly. Shank short loin shankle alcatra. Ground round meatball biltong spare ribs doner pig, fatback jerky capicola landjaeger meatloaf."
         },
         {
             name: "Mystic Coven",
             image: "https://bearlake.org/wp-content/uploads/cache/images/garden-city-logan-campgrounds/garden-city-logan-campgrounds-987998613.jpg",
-            description: "Not for the faint of heart or weak of magic"
+            description: "Not for the faint of heart or weak of magic. Spicy jalapeno bacon ipsum dolor amet strip steak buffalo ball tip swine pastrami corned beef. Short ribs prosciutto alcatra, hamburger kielbasa pork loin bacon andouille pastrami pork belly. Shank short loin shankle alcatra. Ground round meatball biltong spare ribs doner pig, fatback jerky capicola landjaeger meatloaf."
         }
     ]
 function seedDB(){
