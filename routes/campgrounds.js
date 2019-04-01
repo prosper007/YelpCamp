@@ -1,5 +1,7 @@
 var express     = require("express"),
     Campground  = require("../models/campground"),
+    Comment     = require("../models/comment"),
+    middleware  = require("../middleware"),
     router      = express.Router();
 
 
@@ -16,7 +18,7 @@ router.get("/", function(req, res){
 });
 
 //CREATE ROUTE
-router.post("/", isLoggedIn, function(req, res){
+router.post("/", middleware.isLoggedIn, function(req, res){
     var name = req.body.name;
     var image = req.body.image;
     var desc = req.body.description;
@@ -40,7 +42,7 @@ router.post("/", isLoggedIn, function(req, res){
 });
 
 //NEW ROUTE
-router.get("/new", isLoggedIn, function(req, res) {
+router.get("/new", middleware.isLoggedIn, function(req, res) {
     res.render("campgrounds/new");
 });
 
@@ -56,12 +58,47 @@ router.get("/:id", function(req, res) {
     
 });
 
-//middleware
-function isLoggedIn(req, res, next) {
-    if(req.isAuthenticated()){
-        return next();
-    }
-    res.redirect("/login");
-}
+//EDIT ROUTE
+router.get("/:id/edit", middleware.checkCampgroundOwnerShip, function(req, res) {
+    Campground.findById(req.params.id, function(err, foundCampground){
+        if(err){
+            res.redirect("back");
+            console.log(err);
+        } else{
+            res.render("campgrounds/edit", {campground: foundCampground});
+        }
+    });
+});
+
+//UPDATE CAMPGROUND ROUTE
+router.put("/:id", middleware.checkCampgroundOwnerShip, function(req, res){
+   Campground.findByIdAndUpdate(req.params.id, req.body.campground, function(err, updatedCampground){
+       if(err){
+           res.redirect("/campgrounds");
+       } else{
+           res.redirect("/campgrounds/"+req.params.id);
+       }
+   });
+});
+
+//DESTROY CAMPGROUND ROUTE
+router.delete("/:id", middleware.checkCampgroundOwnerShip, function(req, res){
+   Campground.findOneAndDelete(req.params.id, function(err,removedCampground){
+       if(err){
+           console.log(err)
+           res.redirect("/campgrounds");
+       } else{
+           Comment.deleteMany({_id: {$in: removedCampground.comments}}, function(err){
+               if(err){
+                   console.log(err);
+                   res.redirect("/campgrounds");
+               } else{
+                   res.redirect("/campgrounds");
+               }
+           })
+           
+       }
+   });
+});
 
 module.exports = router;
