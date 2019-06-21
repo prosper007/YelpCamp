@@ -35,7 +35,10 @@ router.post("/", middleware.isLoggedIn, function(req, res){
     Campground.create(newCampground, function(err, newlyCreated){
        if(err){
            console.log(err);
+           req.flash("error", "Error creating campground");
+           res.redirect("/campgrounds");
        } else{
+           req.flash("success", "Successfully created campground")
            res.redirect("/campgrounds");
        }
     })
@@ -51,6 +54,8 @@ router.get("/:id", function(req, res) {
     Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
        if(err){
            console.log(err);
+           req.flash("error", "Error displaying campground");
+           res.redirect("/campgrounds");
        } else{
            res.render("campgrounds/show", {campground: foundCampground});
        }
@@ -62,8 +67,9 @@ router.get("/:id", function(req, res) {
 router.get("/:id/edit", middleware.checkCampgroundOwnerShip, function(req, res) {
     Campground.findById(req.params.id, function(err, foundCampground){
         if(err){
-            res.redirect("back");
             console.log(err);
+            req.flash("error", "Error editing campground");
+            res.redirect("back");
         } else{
             res.render("campgrounds/edit", {campground: foundCampground});
         }
@@ -74,8 +80,11 @@ router.get("/:id/edit", middleware.checkCampgroundOwnerShip, function(req, res) 
 router.put("/:id", middleware.checkCampgroundOwnerShip, function(req, res){
    Campground.findByIdAndUpdate(req.params.id, req.body.campground, function(err, updatedCampground){
        if(err){
-           res.redirect("/campgrounds");
+            console.log(err);
+            req.flash("error", "Error updating campground");
+            res.redirect("/campgrounds/"+req.params.id);
        } else{
+           req.flash("success", "Successfully updated campground");
            res.redirect("/campgrounds/"+req.params.id);
        }
    });
@@ -86,6 +95,7 @@ router.delete("/:id", middleware.checkCampgroundOwnerShip, function(req, res){
    Campground.findOneAndDelete(req.params.id, function(err,removedCampground){
        if(err){
            console.log(err)
+           req.flash("error", "Error deleting campground");
            res.redirect("/campgrounds");
        } else{
            Comment.deleteMany({_id: {$in: removedCampground.comments}}, function(err){
@@ -93,6 +103,7 @@ router.delete("/:id", middleware.checkCampgroundOwnerShip, function(req, res){
                    console.log(err);
                    res.redirect("/campgrounds");
                } else{
+                   req.flash("success", "Successfully deleted campground");
                    res.redirect("/campgrounds");
                }
            })
